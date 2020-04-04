@@ -1,0 +1,2 @@
+-r base.txt
+ansible>=2.9.6,<2.10.0
