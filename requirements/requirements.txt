@@ -1,2 +1,5 @@
 -r base.txt
-ansible>=2.9.6,<2.10.0
+ansible==2.9.6
+netmiko==2.4.2
+napalm==2.5.0
+pyntc==0.0.9

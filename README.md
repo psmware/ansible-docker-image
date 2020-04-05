@@ -1,9 +1,9 @@
-# Ansible Docker Image
-This project builds a Docker image containing the current stable Ansible 2.9.6. During the build the container installs everything from the `requirements` folder. A non-root user `coder` is included to allow for non-root development.
+# Network Automation Docker Image
+This project builds a Docker image containing Ansible, NAPALM, Pyntc, and Netmiko. During the build the container installs everything from the `requirements` folder. A non-root user `coder` is included to allow for non-root development.
 
 ## Building the Docker image
 
-To build the image run `make build` int he project root. You can edit the Makefile to create your own image names.
+To build the image run `make build` in the project root. You can edit the Makefile to create your own image names.
 
 ```zsh
 -> ansible-docker-image $ make build

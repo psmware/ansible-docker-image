@@ -35,28 +35,36 @@ RUN echo "===> Adding Python runtime and other packages..."  && \
     wget \
     sudo\
     curl \
-    busybox
-RUN echo "===> Installing Python Packages tools... "  && \
-    pip install --upgrade pip && \
-    python -m pip install --upgrade -r /root/requirements.txt
-RUN echo "===> Cleaning up package list..."  && \
-    rm -rf /var/cache/apk/*               && \
-    rm -fR /root/*.txt
-RUN echo "===> Creating development user and group..." \
+    busybox \
+    busybox-extras \
+    && echo "===> Installing Python Packages tools... " \
+    && python -m pip install --upgrade pip\
+    && python -m pip install --upgrade -r /root/requirements.txt \
+    && echo "===> Cleaning up package list..." \
+    && rm -rf /var/cache/apk/* \
+    && rm -fR /root/*.txt \
+    && echo "===> Creating development user and group..." \
     # Configure default group for $USERNAME
     && addgroup --gid $USER_GID $USERNAME \
     # Configure default $USERNAME
     && adduser -s /usr/bin/zsh --uid $USER_UID --ingroup $USERNAME --disabled-password --home /home/$USERNAME $USERNAME \
-    # Setup Sudo Access
+    # Setup Sudo Access and default ansible folder
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+    && chmod 0440 /etc/sudoers.d/$USERNAME \
+    && mkdir /ansible \
+    && chown -fR $USERNAME.$USERNAME /ansible
 # Setup User Environment
-USER $USERNAME
+USER ${USERNAME}
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 COPY .zshrc  /home/$USERNAME/
 USER root
-RUN chown $USERNAME.$USERNAME /home/$USERNAME/.zshrc
-
+USER ${USERNAME}
+RUN echo  "ansible version          : $(ansible --version) \n" \
+          "ansible-playbook version : $(ansible-playbook --version) \n" \
+          "user                     : $(whoami) \n"
+VOLUME [ "/root", "/ansible", "/var/log", "/var/www", "/etc" ]
 #
 # default command: display Ansible version
-CMD [ "ansible-playbook", "--version" ]
+CMD [ "sh", "-c", "cd /ansible; exec zsh -i" ]
+
+
