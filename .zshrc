@@ -10,6 +10,7 @@ plugins=(
   common-aliases
   django
   extract
+  gpg-agent
   last-working-dir
   osx
   python

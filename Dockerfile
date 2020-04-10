@@ -21,6 +21,8 @@ RUN echo "===> Adding Python runtime and other packages..."  && \
     libxslt \ 
     libxslt-dev \ 
     build-base \ 
+    figlet \
+    gnupg \
     linux-headers \
     sshpass \
     openssh-client \
@@ -58,10 +60,10 @@ USER ${USERNAME}
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 COPY .zshrc  /home/$USERNAME/
 USER root
-USER ${USERNAME}
-RUN echo  "ansible version          : $(ansible --version) \n" \
+RUN chown -fR $USERNAME:$USERNAME /home/$USERNAME \
+    && echo  "ansible version          : $(ansible --version) \n" \
           "ansible-playbook version : $(ansible-playbook --version) \n" \
-          "user                     : $(whoami) \n"
+          "user                     : $(whoami) \n" \
 VOLUME [ "/root", "/ansible", "/var/log", "/var/www", "/etc" ]
 #
 # default command: display Ansible version
