@@ -14,7 +14,8 @@ RUN ls -l /root
 
 # Python, Ansible and dependencies
 RUN echo "===> Adding Python runtime and other packages..."  && \
-    apk --update add zsh \
+    apk update \
+    && apk add zsh \
     libffi-dev \
     libxml2 \ 
     libxml2-dev \ 
@@ -49,12 +50,12 @@ RUN echo "===> Adding Python runtime and other packages..."  && \
     # Configure default group for $USERNAME
     && addgroup --gid $USER_GID $USERNAME \
     # Configure default $USERNAME
-    && adduser -s /usr/bin/zsh --uid $USER_UID --ingroup $USERNAME --disabled-password --home /home/$USERNAME $USERNAME \
+    && adduser -s /bin/zsh --uid $USER_UID --ingroup $USERNAME --disabled-password --home /home/$USERNAME $USERNAME \
     # Setup Sudo Access and default ansible folder
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME \
-    && mkdir /ansible \
-    && chown -fR $USERNAME.$USERNAME /ansible
+    && mkdir /app \
+    && chown -fR $USERNAME.$USERNAME /app
 # Setup User Environment
 USER ${USERNAME}
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -64,9 +65,9 @@ RUN chown -fR $USERNAME:$USERNAME /home/$USERNAME \
     && echo  "ansible version          : $(ansible --version) \n" \
           "ansible-playbook version : $(ansible-playbook --version) \n" \
           "user                     : $(whoami) \n" \
-VOLUME [ "/root", "/ansible", "/var/log", "/var/www", "/etc" ]
+VOLUME [ "/root", "/app" ]
 #
 # default command: display Ansible version
-CMD [ "sh", "-c", "cd /ansible; exec zsh -i" ]
+CMD [ "sh", "-c", "cd /app; exec zsh -i" ]
 
 
