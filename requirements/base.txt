@@ -1,7 +1,7 @@
 requests>=2.20.0,<3.0.0
 asn1crypto>=0.24.0
 Jinja2>=2.10.3,<2.11.0
-lxml==4.3.4
+lxml==4.6.2
 ndg-httpsclient==0.5.1
 netapp-lib
 paramiko==2.7.0
